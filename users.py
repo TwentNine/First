@@ -29,7 +29,7 @@ def get_birthdays_per_week(users):
                 print(day + ":", ", ".join(users))
 
 
-# Cтворення тестового списку користувачів
+# Cписок користувачів
 users = [
     {"name": "Bill", "birthday": datetime.datetime(2023, 6, 27)},
     {"name": "Jill", "birthday": datetime.datetime(2023, 6, 28)},
