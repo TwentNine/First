@@ -1,12 +1,52 @@
-from collections import UserDict
+class AddressBook:
+    def __init__(self):
+        self.contacts = {}
+
+    def add_record(self, record):
+        self.contacts[record.name.value] = record
+
+    def search_by_name(self, name):
+        if name in self.contacts:
+            return self.contacts[name]
+        else:
+            raise KeyError("Контакт не знайдений.")
+
+    def show_all_records(self):
+        if not self.contacts:
+            return "Список контактів порожній."
+        else:
+            result = "Список контактів:\n"
+            for name, record in self.contacts.items():
+                result += f"{name}: {record}\n"
+            return result
+
+
+class Record:
+    def __init__(self, name):
+        self.name = Name(name)
+        self.phones = []
+
+    def add_phone(self, phone):
+        self.phones.append(phone)
+
+    def remove_phone(self, phone):
+        if phone in self.phones:
+            self.phones.remove(phone)
+        else:
+            raise KeyError("Номер телефону не знайдений.")
+
+    def __str__(self):
+        result = f"Name: {self.name.value}\n"
+        if self.phones:
+            result += "Phones:\n"
+            for phone in self.phones:
+                result += f"- {phone}\n"
+        return result
 
 
 class Field:
     def __init__(self, value):
         self.value = value
-
-    def __str__(self):
-        return str(self.value)
 
 
 class Name(Field):
@@ -17,76 +57,34 @@ class Phone(Field):
     pass
 
 
-class Record:
-    def __init__(self, name):
-        self.name = name
-        self.phones = []
-
-    def add_phone(self, phone):
-        self.phones.append(phone)
-
-    def remove_phone(self, phone):
-        self.phones.remove(phone)
-
-    def edit_phone(self, old_phone, new_phone):
-        index = self.phones.index(old_phone)
-        self.phones[index] = new_phone
-
-
-class AddressBook(UserDict):
-    def search(self, criteria):
-        # Адрес
-        pass
-
-
-contacts = {}
-
-
-def input_error(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except KeyError:
-            return "Контакт не знайдений."
-        except ValueError:
-            return "Неправильний формат введення."
-        except IndexError:
-            return "Неправильна команда."
-
-    return wrapper
-
-
-@input_error
 def handle_hello():
     return "How can I help you?"
 
 
-@input_error
 def handle_add_contact(name, number):
-    contacts[name] = number
+    record = Record(name)
+    record.add_phone(Phone(number))
+    address_book.add_record(record)
     return "Контакт успішно доданий!"
 
 
-@input_error
 def handle_change_number(name, number):
-    contacts[name] = number
+    record = address_book.search_by_name(name)
+    record.remove_phone(record.phones[0])  # Remove the first phone number
+    record.add_phone(Phone(number))
     return "Номер телефону змінено!"
 
 
-@input_error
 def handle_show_number(name):
-    return contacts[name]
-
-
-@input_error
-def handle_show_all():
-    if not contacts:
-        return "Список контактів порожній."
+    record = address_book.search_by_name(name)
+    if record.phones:
+        return f"Name: {record.name.value}\nPhone: {record.phones[0].value}"
     else:
-        result = "Список контактів:\n"
-        for name, number in contacts.items():
-            result += f"{name}: {number}\n"
-        return result
+        return "Номер телефону не знайдений."
+
+
+def handle_show_all():
+    return address_book.show_all_records()
 
 
 def main():
@@ -114,4 +112,5 @@ def main():
 
 
 if __name__ == "__main__":
+    address_book = AddressBook()
     main()
