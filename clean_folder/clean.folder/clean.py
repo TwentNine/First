@@ -111,14 +111,16 @@ def process_folder(folder_path):
 
     for root, dirs, files in os.walk(folder_path):
         for filename in files:
-            extension = os.path.splitext(filename)[1][1:].upper()  # 1
+            extension = os.path.splitext(filename)[1][
+                1:
+            ].upper()  # Отримуємо розширення файлу
             known_extensions.add(extension)
 
             source_file_path = os.path.join(root, filename)
             normalized_filename = normalize(filename)
             destination_folder = None
 
-            # 2
+            # Визначаємо категорію файлу за розширенням
             if extension in image_extensions:
                 destination_folder = "images"
             elif extension in video_extensions:
@@ -129,8 +131,12 @@ def process_folder(folder_path):
                 destination_folder = "audio"
             elif extension in archive_extensions:
                 destination_folder = "archives"
-                archive_name = os.path.splitext(normalized_filename)[0]  # 3
-                destination_folder = os.path.join(destination_folder, archive_name)  # 4
+                archive_name = os.path.splitext(normalized_filename)[
+                    0
+                ]  # Видаляємо розширення з імені архіву
+                destination_folder = os.path.join(
+                    destination_folder, archive_name
+                )  # Додаємо підпапку з іменем архіву
                 os.makedirs(os.path.join(root, destination_folder), exist_ok=True)
                 extract_archive(
                     source_file_path, os.path.join(root, destination_folder)
@@ -146,7 +152,7 @@ def process_folder(folder_path):
             destination_file_path = os.path.join(destination_folder_path, new_filename)
             shutil.move(source_file_path, destination_file_path)
 
-        # 5
+        # Видалення порожніх папок
         for dir in dirs:
             dir_path = os.path.join(root, dir)
             if not os.listdir(dir_path):
@@ -157,7 +163,7 @@ def process_folder(folder_path):
 
 def main():
     if len(sys.argv) < 2:
-        print("Please provide the folder path as a command line argument.")
+        print("Usage: python clean.py <folder_path>")
         return
 
     folder_path = sys.argv[1]
