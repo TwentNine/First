@@ -111,16 +111,14 @@ def process_folder(folder_path):
 
     for root, dirs, files in os.walk(folder_path):
         for filename in files:
-            extension = os.path.splitext(filename)[1][
-                1:
-            ].upper()  # Отримуємо розширення файлу
+            extension = os.path.splitext(filename)[1][1:].upper()  # Розширення файлу
             known_extensions.add(extension)
 
             source_file_path = os.path.join(root, filename)
             normalized_filename = normalize(filename)
             destination_folder = None
 
-            # Визначаємо категорію файлу за розширенням
+            # Категорія файлу за розширенням
             if extension in image_extensions:
                 destination_folder = "images"
             elif extension in video_extensions:
@@ -133,10 +131,10 @@ def process_folder(folder_path):
                 destination_folder = "archives"
                 archive_name = os.path.splitext(normalized_filename)[
                     0
-                ]  # Видаляємо розширення з імені архіву
+                ]  # Розширення з імені архіву
                 destination_folder = os.path.join(
                     destination_folder, archive_name
-                )  # Додаємо підпапку з іменем архіву
+                )  # Підпапка з іменем архіву
                 os.makedirs(os.path.join(root, destination_folder), exist_ok=True)
                 extract_archive(
                     source_file_path, os.path.join(root, destination_folder)
